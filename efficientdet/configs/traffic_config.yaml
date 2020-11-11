@@ -1,0 +1,2 @@
+num_classes: 8
+label_map: {1: no_entry, 2: no_stop_park, 3: no_turn, 4: speed_limit, 5: no_remain, 6: warning, 7: signs}
