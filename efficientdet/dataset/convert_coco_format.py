@@ -3,8 +3,8 @@ import cv2
 import os
 import pickle as pkl
 
-data_dir = "/home/ubuntu/Downloads/Compressed/za_traffic_2020/sample/"
-traffic_dir = "/home/ubuntu/Downloads/Compressed/za_traffic_2020"
+data_dir = '/content/drive/My Drive/TSD/Yet-Another-EfficientDet-Pytorch/datasets/sample'
+traffic_dir = "/content/drive/My Drive/TSD/Yet-Another-EfficientDet-Pytorch/datasets/traffic"
 traffic_data = json.load(open(traffic_dir + '/annotations/instances_train2017.json'))
 img_ids = [img['id'] for img in traffic_data['images']]
 ann_ids = [ann['id'] for ann in traffic_data['annotations']]
@@ -23,7 +23,7 @@ extend_label_map = {1: "speed_limit", 2: "goods_vehicles", 3: "no_overtaking",
 
 label_map_mapping = {1: 4, 4: 2, 5: 2, 9: 3, 10: 3, 12: 1, 3: 5, 14: 6, 7: 7, 11: 6, 8: 7, 2: 6, 6: 6, 13: 6}
 
-anns = json.load(open(data_dir + 'sample.json', 'r'))
+anns = json.load(open(data_dir + '/sample.json', 'r'))
 convert_annotations = {}
 convert_annotations['info'] = {}
 convert_annotations['images'] = []
@@ -60,5 +60,5 @@ for idx, ann in enumerate(anns):
                                                             _ann['bboxes'][i][3] - _ann['bboxes'][i][1]]})
 
 
-    json.dump(convert_annotations, open('../data/cure/annotations/cure_annotations.json', 'w+'))
-    pkl.dump(mapping_idx, open('../data/cure/mapping_idx.pkl', 'wb'))
+json.dump(convert_annotations, open('../data/cure/annotations/cure_annotations.json', 'w+'))
+pkl.dump(mapping_idx, open('../data/cure/mapping_idx.pkl', 'wb'))
