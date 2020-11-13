@@ -162,11 +162,11 @@ def create_tf_example(image,
             xmax.append(float(x + width) / image_width)
             ymin.append(float(y) / image_height)
             ymax.append(float(y + height) / image_height)
-            is_crowd.append(object_annotations['iscrowd'])
+            is_crowd.append(0)
             category_id = int(object_annotations['category_id'])
             category_ids.append(category_id)
             category_names.append(category_index[category_id]['name'].encode('utf8'))
-            area.append(object_annotations['area'])
+            area.append(0)
 
             if include_masks:
                 run_len_encoding = mask.frPyObjects(object_annotations['segmentation'],
@@ -246,9 +246,14 @@ def _load_object_annotations(object_annotations_file, object_extend_annotations_
     return img_to_obj_annotation, category_index
 
 
-def _load_images_info(image_info_file):
+def _load_images_info(image_info_file, image_info_file_extend):
     with tf.io.gfile.GFile(image_info_file, 'r') as fid:
         info_dict = json.load(fid)
+    
+    if image_info_file_extend is not None:
+        with tf.io.gfile.GFile(image_info_file_extend, 'r') as fid:
+            info_dict_extend = json.load(fid)
+        return info_dict['images'] + info_dict_extend['images']
     return info_dict['images']
 
 
@@ -283,8 +288,8 @@ def _create_tf_record_from_coco_annotations(image_info_file,
         tf.io.TFRecordWriter(output_path + '-%05d-of-%05d.tfrecord' %
                              (i, num_shards)) for i in range(num_shards)
     ]
-    images = _load_images_info(image_info_file)
-
+    images = _load_images_info(image_info_file, object_extend_annotations_file)
+    print("#{} Images".format(len(images)))
     img_to_obj_annotation = None
     category_index = None
     if object_annotations_file:
