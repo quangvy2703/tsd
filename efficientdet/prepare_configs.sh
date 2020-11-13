@@ -1,12 +1,12 @@
-export MODEL=efficientdet-d0
-export DATA_PATH='/home/ubuntu/Downloads/Compressed/za_traffic_2020'
-export DATA_ANNOTATIONS_PATH='/home/ubuntu/Downloads/Compressed/za_traffic_2020/annotations/instances_train2017.json'
+export MODEL=efficientdet-d7
+export DATA_PATH="/content/drive/My Drive/TSD/Yet-Another-EfficientDet-Pytorch/datasets/traffic"
+export DATA_ANNOTATIONS_PATH='/content/drive/My Drive/TSD/Yet-Another-EfficientDet-Pytorch/datasets/traffic/annotations/instances_train2017.json'
 
 # extend data
 export USE_EXTEND_DATA=1
-export EXTEND_DATA_PATH='/home/ubuntu/papers/TSD/automl/automl/efficientdet/data/cure'
-export DATA_EXTEND_ANNOTATIONS_PATH='/home/ubuntu/papers/TSD/automl/automl/efficientdet/data/cure/annotations/cure_annotations.json'
-cd automl/efficientdet/
+export EXTEND_DATA_PATH='/content/tsd/efficientdet/data/cure'
+export DATA_EXTEND_ANNOTATIONS_PATH='/content/tsd/efficientdet/data/cure/annotations/cure_annotations.json'
+cd /content/tsd/efficientdet/
 
 #pip install -r requirements.txt
 
@@ -14,8 +14,8 @@ cd automl/efficientdet/
 # Download backbone
 mkdir checkpoints
 cd checkpoints
-#wget https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/${MODEL}.tar.gz
-#tar xf ${MODEL}.tar.gz
+# wget https://storage.googleapis.com/cloud-tpu-checkpoints/efficientdet/coco/${MODEL}.tar.gz
+# tar xf ${MODEL}.tar.gz
 
 #configs/traffic_config.yaml
 #num_classes: 8
@@ -25,11 +25,18 @@ cd checkpoints
 cd ../dataset
 
 
+mkdir data
+mkdir data/cure
+mkdir data/cure/images
+mkdir data/cure/annotations
+python convert_coco_format.py
+
+
 python create_coco_tfrecord.py \
-  --image_dir=${DATA_PATH} \
-  --object_annotations_file=${DATA_ANNOTATIONS_PATH} \
-  --image_extend_dir=${EXTEND_DATA_PATH} \
-  --object_extend_annotations_file=${DATA_EXTEND_ANNOTATIONS_PATH} \
+  --image_dir="${DATA_PATH}" \
+  --object_annotations_file="${DATA_ANNOTATIONS_PATH}" \
+  --image_extend_dir="${EXTEND_DATA_PATH}" \
+  --object_extend_annotations_file="${DATA_EXTEND_ANNOTATIONS_PATH}" \
   --output_file_prefix=../tfrecord/train \
   --num_shards=32
 
